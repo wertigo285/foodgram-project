@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 
+import os
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -139,3 +141,28 @@ EMAIL_FILE_PATH = BASE_DIR.joinpath('sent_emails')
 LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'index'
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': True,
+#     'handlers': {
+#         'console': {
+#             # logging handler that outputs log messages to terminal
+#             'class': 'logging.StreamHandler',
+#             'level': 'DEBUG',  # message level to be written to console
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console'],
+#             'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+#         },
+#         'django.db': {
+#             # django also has database level logging
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#             'propagate': Falsecl,  # this tells logger to send logging message
+#             # to its parent (will send if set to True)
+#         },
+#     },
+# }

@@ -5,17 +5,16 @@ from unidecode import unidecode
 
 User = get_user_model()
 
-
 class Recipe(models.Model):
     pub_date = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='recieps')
+        User, on_delete=models.CASCADE, related_name='recipes')
     title = models.CharField(max_length=100)
     image = models.ImageField(upload_to='recieps/', blank=True, null=True)
-    text = models.TextField()
+    description = models.TextField()
     ingredients = models.ManyToManyField(
-        'Ingredient', related_name='ingredients', through='IngredientQuantity')
-    tags = models.ManyToManyField('Tag', related_name='tags')
+        'Ingredient', through='IngredientQuantity')
+    tags = models.ManyToManyField('Tag', related_name='recipes')
     duration = models.PositiveSmallIntegerField()
 
     class Meta:
@@ -54,7 +53,7 @@ class Tag(models.Model):
         super(Tag, self).save(*args, **kwargs)
 
 
-class UserFollow(models.Model):
+class Subscription(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='followers')
     author = models.ForeignKey(
@@ -63,9 +62,9 @@ class UserFollow(models.Model):
 
 class Favorite(models.Model):
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='favorite_recipes')
+        User, on_delete=models.CASCADE, related_name='favorite')
     recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, related_name='users_likes_it')
+        Recipe, on_delete=models.CASCADE, related_name='users_favorite')
 
 
 class ShoppingList(models.Model):
