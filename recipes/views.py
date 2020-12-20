@@ -4,8 +4,8 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.transaction import atomic
-from django.db.models import Count, OuterRef, Prefetch, Subquery
-from django.http import JsonResponse, Http404
+from django.db.models import Count, OuterRef, Prefetch, Subquery, Sum, Max
+from django.http import JsonResponse, Http404, HttpResponse
 from django.shortcuts import get_object_or_404, get_list_or_404, render, redirect
 from django.views.decorators.http import require_http_methods
 
@@ -178,8 +178,35 @@ def recipe_new(request):
 @ login_required
 def shopping_list(request):
     user = request.user
-    shopping_list = ShoppingList.objects.filter(user=user)
+    shopping_list = ShoppingList.objects.select_related(
+        'recipe').filter(user=user)
     return render(request, 'shopping_list.html', context={'shopping_list': shopping_list})
+
+
+@ login_required
+def shopping_list_download(request):
+    # Отталкиваемя от ShoppingList для вывода рецептов в порядке отображения на странице
+    pushcarses = ShoppingList.objects.select_related(
+        'recipe'
+    ).prefetch_related(
+        Prefetch('recipe__ingredients', to_attr='ingredients_pf',
+                 queryset=IngredientQuantity.objects.select_related(
+                     'ingredient'))).filter(user=request.user)
+
+    text = ['\tСписок покупок.']
+    for i, pushcarse in enumerate(pushcarses, 1):
+        text.append('')
+        recipe = pushcarse.recipe
+        text.append(f'{i}. {recipe.title}')
+        for j, ingredient in enumerate(recipe.ingredients_pf, 1):
+            text.append(
+                f'\t{j}) {ingredient.ingredient.title.capitalize()} {ingredient.quantity} {ingredient.ingredient.dimension}')
+
+    text = '\n'.join(text)
+    filename = 'shopping_list.txt'
+    response = HttpResponse(text, content_type='text/plain')
+    response['Content-Disposition'] = f'attachment; filename={filename}'
+    return response
 
 
 @ login_required

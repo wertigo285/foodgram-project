@@ -2,7 +2,8 @@ from django import template
 from django.urls import reverse
 
 
-from recipes.models import ShoppingList 
+from recipes.models import ShoppingList
+
 
 register = template.Library()
 

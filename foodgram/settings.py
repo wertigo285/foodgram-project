@@ -71,7 +71,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
             'libraries': {
-                'base_tags': 'base_templates.templatetags.base_tags'    
+                'base_tags': 'base_templates.templatetags.base_tags'
             }
         },
     },
@@ -128,10 +128,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-#STATIC_ROOT = BASE_DIR.joinpath('static')
-STATICFILES_DIRS = [
-    BASE_DIR.joinpath('static'),
-]
+STATIC_ROOT = BASE_DIR.joinpath('static')
+# STATICFILES_DIRS = [
+#     BASE_DIR.joinpath('static'),
+# ]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR.joinpath('media')
 
@@ -142,27 +142,27 @@ LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'index'
 
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': True,
-#     'handlers': {
-#         'console': {
-#             # logging handler that outputs log messages to terminal
-#             'class': 'logging.StreamHandler',
-#             'level': 'DEBUG',  # message level to be written to console
-#         },
-#     },
-#     'loggers': {
-#         'django': {
-#             'handlers': ['console'],
-#             'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-#         },
-#         'django.db': {
-#             # django also has database level logging
-#             'handlers': ['console'],
-#             'level': 'DEBUG',
-#             'propagate': False,  # this tells logger to send logging message
-#             # to its parent (will send if set to True)
-#         },
-#     },
-# }
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'handlers': {
+        'console': {
+            # logging handler that outputs log messages to terminal
+            'class': 'logging.StreamHandler',
+            'level': 'DEBUG',  # message level to be written to console
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+        },
+        'django.db': {
+            # django also has database level logging
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,  # this tells logger to send logging message
+            # to its parent (will send if set to True)
+        },
+    },
+}

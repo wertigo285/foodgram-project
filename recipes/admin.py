@@ -27,6 +27,7 @@ class TagAdmin(admin.ModelAdmin):
 class SubscriptionAdmin(admin.ModelAdmin):
     pass
 
+
 class IngredientQuantityAdmin(admin.ModelAdmin):
     pass
 
