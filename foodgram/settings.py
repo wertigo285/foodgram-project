@@ -161,7 +161,7 @@ LOGOUT_REDIRECT_URL = 'index'
 #             # django also has database level logging
 #             'handlers': ['console'],
 #             'level': 'DEBUG',
-#             'propagate': Falsecl,  # this tells logger to send logging message
+#             'propagate': False,  # this tells logger to send logging message
 #             # to its parent (will send if set to True)
 #         },
 #     },
