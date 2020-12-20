@@ -5,7 +5,6 @@
     <link rel="stylesheet" href="{% static 'pages/form.css' %}">
 {% endblock %}
 {% block content %}
-{% load custom_filters %}
 <main class="main container">
     <div class="main__header">
         <h1 class="main__title">{% if form.instance.id %}Редактирование рецепта{% else %}Создание рецепта{% endif %}</h1>

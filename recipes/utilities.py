@@ -1,7 +1,27 @@
+from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404
 
 
-from .models import IngredientQuantity, Ingredient
+from .models import (Favorite, IngredientQuantity,
+                     Ingredient, Recipe, ShoppingList,
+                     Subscription)
+
+
+def get_recipes_qs(user):
+    return Recipe.objects.select_related(
+        'author'
+    ).prefetch_related(
+        'tags',
+        Prefetch(
+            'users_favorite', queryset=Favorite.objects.filter(
+                user=user
+            )),
+        Prefetch(
+            'author__followings', queryset=Subscription.objects.filter(
+                user=user
+            )),
+        Prefetch('shopping_lists', queryset=ShoppingList.objects.filter(
+            user=user)))
 
 
 def extract_ingredients_table(post_data):

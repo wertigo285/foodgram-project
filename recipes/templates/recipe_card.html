@@ -1,3 +1,4 @@
+        {% load custom_tags %}
         <div class="card" data-id="{{ recipe.id }}">
             
             <a href="{% url 'recipe' recipe.id %}" class="link" target="_blank"><img src="{{ recipe.image.url }}" alt="Какой-то текст" class="card__image"></a>
@@ -15,9 +16,9 @@
                 </div>
             </div>
             <div class="card__footer">
-                <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
                 {% if user.is_authenticated %}
-                <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+                <button class="button button_style_light-blue{% if recipe.shopping_lists.all %}-outline{% endif %}" name="purchases" {% if not recipe.shopping_lists.all %} data-out {% endif %}><span class="{% if recipe.shopping_lists.all %}icon-check {% else %}icon-plus {% endif %} button__icon"></span>{% if recipe.shopping_lists.all %} Рецепт добавлен{% else %} Добавить в покупки{% endif %}</button>
+                <button class="button button_style_none" name="favorites" {% if not recipe.users_favorite.all %} data-out {% endif %}><span class="icon-favorite {% if recipe.users_favorite.all %}icon-favorite_active{% endif %}"></span></button>
                 {% endif %}
             </div>
         </div>     

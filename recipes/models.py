@@ -104,12 +104,6 @@ class Favorite(models.Model):
                 fields=['user', 'recipe'], name='unique_favorite')
         ]
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'recipe'], name='unique_favorite')
-        ]
-
     def __str__(self):
         return f'Рецепт {self.recipe} в избранном {self.user.username}'
 
