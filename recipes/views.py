@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.transaction import atomic
 from django.db.models import Count, OuterRef, Prefetch, Subquery
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404, get_list_or_404, render, redirect
 from django.views.decorators.http import require_http_methods
 
@@ -75,7 +75,7 @@ def subscriptions(request):
     # https://code.djangoproject.com/ticket/26780#comment:6
     feed_length = 3
     authors = User.objects.filter(
-        followings__user=user
+        followers__user=user
     ).annotate(
         recipe_count=Count(
             'recipes'
@@ -104,7 +104,11 @@ def subscriptions(request):
 
 def recipe_view(request, recipe_id):
     user = request.user
-    recipe = get_object_or_404(get_recipes_qs(user), pk=recipe_id)
+
+    try:
+        recipe = get_recipes_qs(user).get(pk=recipe_id)
+    except Recipe.DoesNotExist:
+        raise Http404("No Recipe matches the given query.")
 
     ingredients = zip(recipe.ingredients.all(),
                       recipe.ingredientquantity_set.all())
@@ -138,8 +142,7 @@ def recipe_edit(request, recipe_id):
     ).values(
         'pk', 'quantity', 'ingredient__title', 'ingredient__dimension'
     ).order_by(
-        'pk'
-    )
+        'pk')
 
     return render(request, 'recipe_form.html', context={'form': form, 'ingredients': list(ingredients)})
 
@@ -232,3 +235,11 @@ def purchases_js(request, recipe_id=None):
         sub.delete()
 
     return JsonResponse(data={})
+
+
+def page_not_found(request, exception):
+    return render(request, 'misc/404.html', {'path': request.path}, status=404)
+
+
+def server_error(request):
+    return render(request, 'misc/500.html', status=500)

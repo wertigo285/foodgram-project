@@ -13,7 +13,7 @@
                     <h1 class="single-card__title">{{ recipe.title }}</h1>
                     {% if user.is_authenticated %}
                     <div class="single-card__favorite">
-                        <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite icon-favorite_big"></span></button>
+                        <button class="button button_style_none" name="favorites" {% if not recipe.users_favorite.all %} data-out {% endif %}><span class="icon-favorite {% if recipe.users_favorite.all %}icon-favorite_active{% endif %}"></span></button>
                         <div class="single-card__favorite-tooltip tooltip">Добавить в избранное</div>
                     </div>
                     {% endif %}
@@ -34,8 +34,8 @@
                 </div>
                 {% if user.is_authenticated %}
                 <ul class="single-card__items">
-                    <li class="single-card__item"><button class="button button_style_blue" name="purchases" data-out><span class="icon-plus"></span> Добавить в покупки</button></li>
-                    <li class="single-card__item"><button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button></li>
+                    <li class="single-card__item"><button class="button button_style_blue button_style_blue-outline button_style_light-blue{% if recipe.shopping_lists.all %}-outline{% endif %}" name="purchases" {% if not recipe.shopping_lists.all %} data-out {% endif %}><span class="{% if recipe.shopping_lists.all %}icon-check {% else %}icon-plus {% endif %} button__icon"></span>{% if recipe.shopping_lists.all %}Рецепт добавлен{% else %}Добавить в покупки{% endif %}</button></li>
+                    <li class="single-card__item"><button class="button button_style_light-blue button_size_subscribe {% if recipe.recipe.author.followers.all %}button_style_blue{% endif %}" name="subscribe" {% if not recipe.author.followers.all %} data-out {% endif %}>{% if recipe.author.followers.all %}Отписаться от автора{% else %}Подписаться на автора{% endif %}</button>
                 </ul>
                 {% endif %}
                 <div class="single-card__section">
@@ -54,6 +54,7 @@
         </div>
     </main>
     
+
 {% endblock content %}
 
 {% block scripts %}

@@ -78,9 +78,9 @@ class Tag(models.Model):
 
 class Subscription(models.Model):
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='followers')
-    author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='followings')
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='followers')
 
     class Meta:
         constraints = [

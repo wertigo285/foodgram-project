@@ -18,9 +18,9 @@ urlpatterns = [
     path('purchases/', shopping_list, name='shopping_list'),
     path('ingredients', ingredients_js, name='ingredients'),
     path('favorites', favorites_js),
-    path('favorites/<int:recipe_id>/', favorites_js),
+    path('favorites/<int:recipe_id>', favorites_js),
     path('subscriptions', subscriptions_js),
-    path('subscriptions/<int:author_id>/', subscriptions_js),
+    path('subscriptions/<int:author_id>', subscriptions_js),
     path('purchases', purchases_js),
-    path('purchases/<int:recipe_id>/', purchases_js),
+    path('purchases/<int:recipe_id>', purchases_js),
 ]

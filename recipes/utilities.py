@@ -17,7 +17,7 @@ def get_recipes_qs(user):
                 user=user
             )),
         Prefetch(
-            'author__followings', queryset=Subscription.objects.filter(
+            'author__followers', queryset=Subscription.objects.filter(
                 user=user
             )),
         Prefetch('shopping_lists', queryset=ShoppingList.objects.filter(

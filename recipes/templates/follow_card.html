@@ -22,5 +22,6 @@
         </div>
         <div class="card-user__footer">
             <button  type="submit" class="button button_style_light-blue button_size_auto" name="subscribe">Отписаться</button>
+            {% comment %} <button class="button button_style_light-blue button_size_auto {% if recipe.recipe.author.followers.all %}button_style_blue{% endif %}" name="subscribe" {% if not recipe.author.followers.all %} data-out {% endif %}>{% if recipe.author.followers.all %}Отписаться от автора{% else %}Подписаться на автора{% endif %}</button> {% endcomment %}
         </div>
     </div>
