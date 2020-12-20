@@ -13,10 +13,11 @@
                     </div>
                 </li>
                 {% endfor %}
-                
+                {% if author.recipe_count > feed_length %}
                 <li class="card-user__item">
-                    <a href="{% url 'author' author.id %}" class="card-user__link link">Еще 7 рецептов...</a>
+                    <a href="{% url 'author' author.id %}" class="card-user__link link">Еще {{ author.recipe_count|add:"-1" }} рецептов...</a>
                 </li>
+                {% endif %}
             </ul>
         </div>
         <div class="card-user__footer">
