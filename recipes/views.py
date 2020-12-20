@@ -136,7 +136,6 @@ def recipe_delete(request, recipe_id):
 @login_required
 def recipe_new(request):
     form = RecipeForm(request.POST or None, files=request.FILES or None)
-
     if request.method == 'POST':
         if form.is_valid():
             recipe = form.save(commit=False)

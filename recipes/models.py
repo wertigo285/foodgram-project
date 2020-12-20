@@ -1,6 +1,5 @@
 from datetime import datetime
 
-
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.text import slugify
@@ -98,6 +97,12 @@ class Favorite(models.Model):
         User, on_delete=models.CASCADE, related_name='favorite')
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE, related_name='users_favorite')
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'recipe'], name='unique_favorite')
+        ]
 
     class Meta:
         constraints = [
