@@ -1,10 +1,11 @@
 import json
+from collections import defaultdict
 
 
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.transaction import atomic
-from django.db.models import Count, OuterRef, Prefetch, Subquery, Sum, Max
+from django.db.models import Count, OuterRef, Prefetch, Subquery
 from django.http import JsonResponse, Http404, HttpResponse
 from django.shortcuts import get_object_or_404, get_list_or_404, render, redirect
 from django.views.decorators.http import require_http_methods
@@ -19,34 +20,53 @@ from .utilities import set_ingredients, get_recipes_qs
 def index(request):
     tags = Tag.objects.all()
 
+    tags_values = request.GET.getlist('tags')
+
+    if not tags_values:
+        tags_values = [tag.slug for tag in tags]
+
     user = request.user
+    recipes = Recipe.objects
+    if user.is_authenticated:
+        recipes = get_recipes_qs(user)
 
-    recipes = get_recipes_qs(user)
+    recipes = recipes.filter(tags__slug__in=tags_values)
 
-    paginator = Paginator(recipes, 6)
+    paginator = Paginator(recipes.distinct(), 6)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
 
     context = {'page': page, 'paginator': paginator,
-               'tags': tags, 'title': 'Рецепты'}
+               'tags': tags, 'title': 'Рецепты',
+               'tags_values': tags_values}
     return render(request, 'index.html', context=context)
 
 
 def author_view(request, author_id):
     tags = Tag.objects.all()
 
+    tags_values = request.GET.getlist('tags')
+
+    if not tags_values:
+        tags_values = [tag.slug for tag in tags]
+
     user = request.user
 
     author = get_object_or_404(User, pk=author_id)
 
-    recipes = get_recipes_qs(user).filter(author=author)
+    recipes = Recipe.objects
+    if user.is_authenticated:
+        recipes = get_recipes_qs(user)
 
-    paginator = Paginator(recipes, 6)
+    recipes = recipes.filter(author=author, tags__slug__in=tags_values)
+
+    paginator = Paginator(recipes.distinct(), 6)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
 
     context = {'page': page, 'paginator': paginator,
-               'tags': tags, 'title': author.first_name}
+               'tags': tags, 'title': author.first_name,
+               'tags_values': tags_values}
     return render(request, 'index.html', context=context)
 
 
@@ -54,16 +74,23 @@ def author_view(request, author_id):
 def favorites(request):
     tags = Tag.objects.all()
 
+    tags_values = request.GET.getlist('tags')
+
+    if not tags_values:
+        tags_values = [tag.slug for tag in tags]
+
     user = request.user
 
-    recipes = get_recipes_qs(user).filter(users_favorite__user=user)
+    recipes = get_recipes_qs(user).filter(users_favorite__user=user,
+                                          tags__slug__in=tags_values)
 
-    paginator = Paginator(recipes, 6)
+    paginator = Paginator(recipes.distinct(), 6)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
 
     context = {'page': page, 'paginator': paginator,
-               'tags': tags, 'title': 'Избранное'}
+               'tags': tags, 'title': 'Избранное',
+               'tags_values': tags_values}
     return render(request, 'index.html', context=context)
 
 
@@ -104,9 +131,12 @@ def subscriptions(request):
 
 def recipe_view(request, recipe_id):
     user = request.user
+    recipe = Recipe.objects
+    if user.is_authenticated:
+        recipe = get_recipes_qs(user)
 
     try:
-        recipe = get_recipes_qs(user).get(pk=recipe_id)
+        recipe = recipe.get(pk=recipe_id)
     except Recipe.DoesNotExist:
         raise Http404("No Recipe matches the given query.")
 
@@ -185,22 +215,27 @@ def shopping_list(request):
 
 @ login_required
 def shopping_list_download(request):
-    # Отталкиваемя от ShoppingList для вывода рецептов в порядке отображения на странице
     pushcarses = ShoppingList.objects.select_related(
         'recipe'
     ).prefetch_related(
         Prefetch('recipe__ingredients', to_attr='ingredients_pf',
                  queryset=IngredientQuantity.objects.select_related(
                      'ingredient'))).filter(user=request.user)
-
-    text = ['\tСписок покупок.']
-    for i, pushcarse in enumerate(pushcarses, 1):
+    text = ['{:^60}'.format('Список покупок.')]
+    for pushcarse in pushcarses:
         text.append('')
         recipe = pushcarse.recipe
-        text.append(f'{i}. {recipe.title}')
-        for j, ingredient in enumerate(recipe.ingredients_pf, 1):
-            text.append(
-                f'\t{j}) {ingredient.ingredient.title.capitalize()} {ingredient.quantity} {ingredient.ingredient.dimension}')
+        text.append('{:^60}'.format(recipe.title))
+        recipe_sh_l = defaultdict(list)
+        for ingredient in recipe.ingredients_pf:
+            ingr_str = recipe_sh_l[ingredient.ingredient_id]
+            if ingr_str:
+                ingr_str[1] += ingredient.quantity
+                continue
+            ingr_str.extend([ingredient.ingredient.title.capitalize(),
+                            ingredient.quantity, ingredient.ingredient.dimension])
+        for j, ingr_str in enumerate(recipe_sh_l.values(), start=1):
+            text.append('{:>3d}) {: <40} - {: <3.2f} {:<.15}'.format(j, *ingr_str))
 
     text = '\n'.join(text)
     filename = 'shopping_list.txt'

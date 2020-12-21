@@ -20,6 +20,6 @@ def set_activity_class(context, *args):
 @register.simple_tag(takes_context=True)
 def shopping_list_counter(context, *args):
     user = context['request'].user
-    counter = len(ShoppingList.objects.filter(user=user))
+    counter = ShoppingList.objects.filter(user=user).count()
 
     return counter

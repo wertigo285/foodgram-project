@@ -4,14 +4,15 @@
 {% block css %}
     <link rel="stylesheet" href="{% static 'pages/index.css' %}">
 {% endblock %}
+{% load tags_filters %}
 {% block content %}
     <main class="main container">
         <div class="main__header">
             <h1 class="main__title">{{ title }}</h1>
             <ul class="tags">
                 {% for tag in tags %}
-                <li class="tags__item">
-                    <a id="{{ tag.id }}" class="tags__checkbox tags__checkbox_style_{{ tag.color }} tags__checkbox_active" href="#"></a>
+                <li class="tags__item">                        
+                    <a id="{{ tag.pk }}" class="tags__checkbox tags__checkbox_style_{{ tag.color }} {% if tag.slug in tags_values %}tags__checkbox_active{% endif %}" href="/?{{ request|get_tags_link:tag}}"></a>
                     <span class="tags__label">{{ tag.title }}</span>
                 </li>
                 {% endfor %}

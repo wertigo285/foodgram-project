@@ -21,6 +21,10 @@ from django.conf.urls import handler404, handler500
 from django.conf.urls.static import static
 
 
+handler404 = 'recipes.views.page_not_found'
+handler500 = 'recipes.views.server_error'
+
+
 urlpatterns = [
     path('', include('recipes.urls')),
     path('admin/', admin.site.urls),
@@ -32,3 +36,8 @@ if settings.DEBUG:
                           document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL,
                           document_root=settings.STATIC_ROOT)
+else:
+    urlpatterns += [
+        re_path(r'^static/(?P<path>.*)$', serve,
+                {'document_root': settings.STATIC_ROOT}),
+    ]

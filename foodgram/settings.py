@@ -25,9 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 't0=m+u!h_(7pt+9(3jgbg*7_oi1i&!lyaqu#_r9mk96-njyfmw'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -129,9 +129,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR.joinpath('static')
-# STATICFILES_DIRS = [
-#     BASE_DIR.joinpath('static'),
-# ]
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR.joinpath('media')
 
@@ -141,28 +139,3 @@ EMAIL_FILE_PATH = BASE_DIR.joinpath('sent_emails')
 LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'index'
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'handlers': {
-        'console': {
-            # logging handler that outputs log messages to terminal
-            'class': 'logging.StreamHandler',
-            'level': 'DEBUG',  # message level to be written to console
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-        },
-        'django.db': {
-            # django also has database level logging
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': False,  # this tells logger to send logging message
-            # to its parent (will send if set to True)
-        },
-    },
-}

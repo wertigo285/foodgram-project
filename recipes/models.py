@@ -20,7 +20,7 @@ class Recipe(models.Model):
     description = models.TextField()
     ingredients = models.ManyToManyField(
         'Ingredient', through='IngredientQuantity')
-    tags = models.ManyToManyField('Tag', related_name='recipes', blank=True)
+    tags = models.ManyToManyField('Tag', related_name='recipes')
     duration = models.PositiveSmallIntegerField()
 
     class Meta:
@@ -66,7 +66,7 @@ class IngredientQuantity(models.Model):
 class Tag(models.Model):
     title = models.CharField(max_length=20)
     color = models.CharField(max_length=20, null=False, default='', blank=True)
-    slug = models.SlugField(max_length=20)
+    slug = models.SlugField(max_length=20, primary_key=True)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(unidecode(self.title))
