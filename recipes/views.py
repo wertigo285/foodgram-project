@@ -14,7 +14,7 @@ from django.views.decorators.http import require_http_methods
 from .forms import RecipeForm
 from .models import (Favorite, Ingredient, IngredientQuantity,
                      Recipe, Subscription, ShoppingList, Tag, User)
-from .utilities import set_ingredients, get_recipes_qs
+from .utilities import set_ingredients, get_recipes_qs, get_tags
 
 
 def index(request):
@@ -26,6 +26,7 @@ def index(request):
         tags_values = [tag.slug for tag in tags]
 
     user = request.user
+
     recipes = Recipe.objects
     if user.is_authenticated:
         recipes = get_recipes_qs(user)
@@ -43,12 +44,7 @@ def index(request):
 
 
 def author_view(request, author_id):
-    tags = Tag.objects.all()
-
-    tags_values = request.GET.getlist('tags')
-
-    if not tags_values:
-        tags_values = [tag.slug for tag in tags]
+    tags, tags_values = get_tags(request.GET)
 
     user = request.user
 
@@ -72,12 +68,7 @@ def author_view(request, author_id):
 
 @ login_required
 def favorites(request):
-    tags = Tag.objects.all()
-
-    tags_values = request.GET.getlist('tags')
-
-    if not tags_values:
-        tags_values = [tag.slug for tag in tags]
+    tags, tags_values = get_tags(request.GET)
 
     user = request.user
 
@@ -131,6 +122,7 @@ def subscriptions(request):
 
 def recipe_view(request, recipe_id):
     user = request.user
+
     recipe = Recipe.objects
     if user.is_authenticated:
         recipe = get_recipes_qs(user)
@@ -200,6 +192,7 @@ def recipe_new(request):
                 recipe.save()
                 set_ingredients(request.POST, recipe)
                 form.save_m2m()
+
             return redirect(to='recipe', recipe_id=recipe.pk)
 
     return render(request, 'recipe_form.html', context={'form': form})
@@ -221,11 +214,15 @@ def shopping_list_download(request):
         Prefetch('recipe__ingredients', to_attr='ingredients_pf',
                  queryset=IngredientQuantity.objects.select_related(
                      'ingredient'))).filter(user=request.user)
+
     text = ['{:^60}'.format('Список покупок.')]
+
     for pushcarse in pushcarses:
         text.append('')
         recipe = pushcarse.recipe
+
         text.append('{:^60}'.format(recipe.title))
+
         recipe_sh_l = defaultdict(list)
         for ingredient in recipe.ingredients_pf:
             ingr_str = recipe_sh_l[ingredient.ingredient_id]
@@ -235,6 +232,7 @@ def shopping_list_download(request):
             ingr_str.extend([ingredient.ingredient.title.capitalize(),
                             ingredient.quantity, ingredient.ingredient.dimension])
         for j, ingr_str in enumerate(recipe_sh_l.values(), start=1):
+
             text.append('{:>3d}) {: <40} - {: <3.2f} {:<.15}'.format(j, *ingr_str))
 
     text = '\n'.join(text)

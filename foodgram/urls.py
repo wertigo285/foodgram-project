@@ -21,8 +21,8 @@ from django.conf.urls import handler404, handler500
 from django.conf.urls.static import static
 
 
-handler404 = 'recipes.views.page_not_found'
-handler500 = 'recipes.views.server_error'
+# handler404 = 'recipes.views.page_not_found'
+# handler500 = 'recipes.views.server_error'
 
 
 urlpatterns = [

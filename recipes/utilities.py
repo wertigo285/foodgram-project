@@ -7,7 +7,19 @@ from django.shortcuts import get_object_or_404
 
 from .models import (Favorite, IngredientQuantity,
                      Ingredient, Recipe, ShoppingList,
-                     Subscription)
+                     Subscription, Tag)
+
+
+def get_tags(req_get_data):
+
+    tags = Tag.objects.all()
+
+    tags_values = req_get_data.getlist('tags')
+
+    if not tags_values:
+        tags_values = [tag.slug for tag in tags]
+
+    return (tags, tags_values)
 
 
 def get_recipes_qs(user):
