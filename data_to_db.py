@@ -12,12 +12,12 @@ from recipes.models import Tag, Ingredient
 
 if __name__ == '__main__':
     classes = globals().keys()
-    
+
     path = os.path.dirname(__file__)
-    path = os.path.join(path,'front','static','ingredients.json')
-    with open(path,'rb') as file:
+    path = os.path.join(path, 'front', 'static', 'ingredients.json')
+    with open(path, 'rb') as file:
         data = json.load(file)
-        #Словарь для избежания дублей
+        # Словарь для избежания дублей
         ingredients = defaultdict()
         for ingredient in data:
             key = tuple([value for value in ingredient.values()])

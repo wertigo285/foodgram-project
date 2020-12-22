@@ -18,12 +18,7 @@ from .utilities import set_ingredients, get_recipes_qs, get_tags
 
 
 def index(request):
-    tags = Tag.objects.all()
-
-    tags_values = request.GET.getlist('tags')
-
-    if not tags_values:
-        tags_values = [tag.slug for tag in tags]
+    tags, tags_values = get_tags(request.GET)
 
     user = request.user
 
