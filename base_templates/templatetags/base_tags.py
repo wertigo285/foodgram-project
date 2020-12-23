@@ -11,6 +11,7 @@ register = template.Library()
 @register.simple_tag(takes_context=True)
 def set_activity_class(context, *args):
     request = context['request']
+    print(request.path)
     current_view_name = request.resolver_match.view_name
     if current_view_name in args:
         return 'nav__item_active'

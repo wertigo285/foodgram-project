@@ -1,0 +1,22 @@
+upstream web {
+    ip_hash;
+    server web:8000;
+}
+
+server {
+    listen 8000;
+
+    location /static/ {
+        alias /www/static/;
+    }
+
+    location /media/ {
+        alias /www/media/;
+    }
+
+    location / {
+        proxy_pass http://web/;
+        proxy_set_header Host ${DOMAIN};
+    }
+
+}
