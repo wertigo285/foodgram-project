@@ -5,6 +5,8 @@ upstream web {
 
 server {
     listen 8000;
+    server_name *.${DOMAIN} ${DOMAIN};
+    client_max_body_size 5M;
 
     location /static/ {
         alias /www/static/;
