@@ -101,6 +101,8 @@ jobs:
             printenv | grep -E "DB_HOST|POSTGRES_USER|POSTGRES_PASSWORD|DB_PORT" >> .env
             printenv | grep -E "EMAIL_HOST|EMAIL_HOST_USER|EMAIL_HOST_PASSWORD|EMAIL_PORT" >> .env
             
+            sudo docker-compose down
+            sudo docker-compose pull web
             sudo docker-compose up -d --force-recreate
             docker exec -i web python manage.py makemigrations  
             docker exec -i web python manage.py migrate 

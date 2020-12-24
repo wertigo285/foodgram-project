@@ -8,10 +8,12 @@
 <main class="main container">
     <div class="custom-center-block">
             <p class="custom-text-block">Ошибка 500</p>
-            <p class="custom-text-block">Ошибка на сервере, попробуйте обновить страницу или обратиться позже</p
+            <p class="custom-text-block">Ошибка на сервере, попробуйте обновить страницу или обратиться позже</p>
+        <form method="get" action= "{% url 'index' %}" style="margin-top:4em"> 
         <div class="custom-button-block">
             <button class="button button_style_blue">Перейти на главную</button>
         </div>
+        </form>
     </div>
 </main>
 {% endblock %}

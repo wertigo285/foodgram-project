@@ -19,6 +19,7 @@ from django.urls import include, path, re_path
 from django.views.static import serve
 from django.conf.urls import handler404, handler500
 from django.conf.urls.static import static
+from django.contrib.flatpages import views
 
 
 handler404 = 'recipes.views.page_not_found'
@@ -29,6 +30,8 @@ urlpatterns = [
     path('', include('recipes.urls')),
     path('admin/', admin.site.urls),
     path('auth/', include('users.urls')),
+    path('about/', views.flatpage, {'url': '/about/'}, name='about'),
+    path('techs/', views.flatpage, {'url': '/techs/'}, name='techs'),
 ]
 
 if settings.DEBUG:

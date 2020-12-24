@@ -1,15 +1,15 @@
 {% extends "base.html" %}
-{% block title %}Ошибка 404{% endblock %}
+{% block title %}{{flatpage.title}}{% endblock %}
 {% load static %}
 {% block css %}
     <link rel="stylesheet" href="{% static 'pages/index.css' %}">
 {% endblock %}
 {% block content %}
 <main class="main container">
-    <div class="custom-center-block">
-            <p class="custom-text-block">Ошибка 404</p>
-            <p class="custom-text-block">Страница <code>{{ path }}</code> не найдена</p>
-        <form method="get" action= "{% url 'index' %}" style="margin-top:4em"> 
+        <div class="custom-center-block">
+            <p class="custom-text-block">{{ flatpage.title }}</p>
+            {{ flatpage.content }}
+        <form method="get" action= "{% url 'index' %}" style="margin-top:4em">    
         <div class="custom-button-block">
             <button class="button button_style_blue">Перейти на главную</button>
         </div>
