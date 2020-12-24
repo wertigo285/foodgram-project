@@ -212,6 +212,8 @@ def shopping_list_download(request):
 
     text = ['{:^60}'.format('Список покупок.')]
 
+    totals = []
+
     for pushcarse in pushcarses:
         text.append('')
         recipe = pushcarse.recipe
@@ -226,9 +228,29 @@ def shopping_list_download(request):
                 continue
             ingr_str.extend([ingredient.ingredient.title.capitalize(),
                             ingredient.quantity, ingredient.ingredient.dimension])
+
+        totals.append(recipe_sh_l)
+
         for j, ingr_str in enumerate(recipe_sh_l.values(), start=1):
 
             text.append('{:>3d}) {: <40} - {: <3.2f} {:<.15}'.format(j, *ingr_str))
+
+    text.extend([''] * 3)
+    text.append('{:^60}'.format('Общий список.'))
+    text.append('')
+
+    totals_dict = defaultdict(list)
+    for recipe_sh_l in totals:
+        for key, value in recipe_sh_l.items():
+            ingr_str = totals_dict[key]
+            if ingr_str:
+                ingr_str[1] += value[1]
+                continue
+            ingr_str.extend(value)
+
+    for j, ingr_str in enumerate(totals_dict.values(), start=1):
+
+        text.append('{:>3d}) {: <40} - {: <3.2f} {:<.15}'.format(j, *ingr_str))
 
     text = '\n'.join(text)
     filename = 'shopping_list.txt'
