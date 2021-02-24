@@ -30,7 +30,7 @@ git clone git@github.com:wertigo285/foodgram-project.git
 docker-compose up
 ```
 
-После построения образов приложение REST API для YamDb будет развернуто в виде двух docker контейнеров:
+После построения образов приложение Foodgram будет развернуто в виде двух docker контейнеров:
 * db  - контейнер СУБД PostgreSQL разернутый из [официального образа](https://hub.docker.com/_/postgres)
 * web - контейнер веб-приложения, загруженный из образа
 * nginx - контейнер с веб-серером
